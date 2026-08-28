@@ -350,6 +350,7 @@ function ensureAllColumns(database) {
     { name: 'seed',                 type: 'INTEGER' },
     { name: 'camera_fixed',         type: 'INTEGER' },
     { name: 'watermark',            type: 'INTEGER' },
+    { name: 'generate_audio',       type: 'INTEGER DEFAULT 0' },
     { name: 'image_url',            type: 'TEXT' },
     { name: 'first_frame_url',      type: 'TEXT' },
     { name: 'last_frame_url',       type: 'TEXT' },
