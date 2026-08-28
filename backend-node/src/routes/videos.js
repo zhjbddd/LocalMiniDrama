@@ -65,21 +65,19 @@ function routes(db, log) {
         try {
           db.prepare(
             `INSERT INTO video_generations (drama_id, storyboard_id, provider, prompt, model, duration, aspect_ratio, resolution, seed, camera_fixed, watermark, generate_audio, image_url, first_frame_url, last_frame_url, reference_image_urls, status, task_id, created_at, updated_at)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'processing', ?, ?, ?)`
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'queued', ?, ?, ?)`
           ).run(dramaId, storyboardId, provider, prompt, model, duration, aspectRatio, resolution, seed, cameraFixed, watermark, generateAudio, imageUrl, firstFrameUrl, lastFrameUrl, refImagesJson, task.id, now, now);
         } catch (e) {
           if (!(e.message || '').includes('generate_audio')) throw e;
           db.prepare(
             `INSERT INTO video_generations (drama_id, storyboard_id, provider, prompt, model, duration, aspect_ratio, resolution, seed, camera_fixed, watermark, image_url, first_frame_url, last_frame_url, reference_image_urls, status, task_id, created_at, updated_at)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'processing', ?, ?, ?)`
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'queued', ?, ?, ?)`
           ).run(dramaId, storyboardId, provider, prompt, model, duration, aspectRatio, resolution, seed, cameraFixed, watermark, imageUrl, firstFrameUrl, lastFrameUrl, refImagesJson, task.id, now, now);
         }
         const videoGenId = db.prepare('SELECT last_insert_rowid() as id').get().id;
-        setImmediate(() => {
-          videoService.processVideoGeneration(db, log, videoGenId);
-        });
+        videoService.enqueueVideoGeneration(db, log, videoGenId);
         const item = videoService.getById(db, videoGenId);
-        response.created(res, item || { id: videoGenId, task_id: task.id, status: 'processing' });
+        response.created(res, item || { id: videoGenId, task_id: task.id, status: 'queued' });
       } catch (err) {
         log.error('videos create', { error: err.message });
         response.internalError(res, err.message);
