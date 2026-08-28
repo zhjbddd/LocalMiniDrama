@@ -181,6 +181,13 @@ AI 服务配置通过软件内「AI 配置」页面管理，无需手动编辑 Y
 $env:XAI_API_KEY = "xai-..."
 ```
 
+桌面 exe 也会读取（仅当环境变量未设置时）：
+
+- `%APPDATA%\localminidrama-desktop\.env`
+- `%APPDATA%\localminidrama-desktop\backend\.env`
+
+文件内容示例：`XAI_API_KEY=xai-...`（该路径不在 Git 仓库内）。
+
 详细说明请见 → [AI 配置指南](configuration.md)
 
 ---

@@ -105,6 +105,24 @@ describe('xAI key isolation', () => {
     else process.env.XAI_API_KEY = prev;
   });
 
+  it('loads XAI_API_KEY from .env text without logging it', () => {
+    const { parseXaiApiKeyFromEnvText, applyXaiApiKeyFromFile } = require('../src/config/loadXaiEnv');
+    assert.equal(parseXaiApiKeyFromEnvText('XAI_API_KEY=xai-file-key-1\n'), 'xai-file-key-1');
+    assert.equal(parseXaiApiKeyFromEnvText('XAI_API_KEY="quoted-key"\n'), 'quoted-key');
+    const prev = process.env.XAI_API_KEY;
+    delete process.env.XAI_API_KEY;
+    const dir = fs.mkdtempSync(path.join(require('os').tmpdir(), 'xai-env-'));
+    const envPath = path.join(dir, '.env');
+    fs.writeFileSync(envPath, 'XAI_API_KEY=from-file-only\n', 'utf8');
+    const logs = [];
+    applyXaiApiKeyFromFile(envPath, { info: (m, meta) => logs.push(JSON.stringify({ m, meta })) });
+    assert.equal(process.env.XAI_API_KEY, 'from-file-only');
+    assert.equal(logs.join('').includes('from-file-only'), false);
+    fs.rmSync(dir, { recursive: true, force: true });
+    if (prev == null) delete process.env.XAI_API_KEY;
+    else process.env.XAI_API_KEY = prev;
+  });
+
   it('drama export package code does not read AI keys', () => {
     const src = fs.readFileSync(path.join(__dirname, '../src/services/dramaExportService.js'), 'utf8');
     assert.equal(/ai_service_configs/.test(src), false);
