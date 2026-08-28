@@ -58,15 +58,15 @@
 
 验收：
 
-- `provider_task_id` 存官方 `request_id`
-- I2V：`first_frame_url` / 分镜首帧 → `image`，不附带 `reference_images`
-- R2V：仅 `reference_image_urls`，无 `image`
-- `done` 后 `downloadVideoToLocal`，`local_path` 有值；远端 URL 不作为长期依赖
-- `expired` 记失败，文案可区分
-- `respect_moderation === false` 记失败
-- 单镜再生成仍插入新 `video_generations` 行（历史保留）
-- 现有 `resume-poll` 对 xAI `request_id` 仍可用
-- 测试全绿
+- [x] `provider_task_id` 存官方 `request_id`
+- [x] I2V：`first_frame_url` / 分镜首帧 → `image`，不附带 `reference_images`
+- [x] R2V：仅 `reference_image_urls`，无 `image`
+- [x] `done` 后 `downloadVideoToLocal`，`local_path` 有值；远端 URL 不作为长期依赖
+- [x] `expired` 记失败，文案可区分
+- [x] `respect_moderation === false` 记失败
+- [x] 单镜再生成仍插入新 `video_generations` 行（历史保留）
+- [x] 现有 `resume-poll` 对 xAI `request_id` 仍可用
+- [x] 测试全绿
 
 禁止：真实 API、改前端默认画幅。
 
